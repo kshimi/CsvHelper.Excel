@@ -22,15 +22,15 @@ namespace CsvHelper.Excel
         /// Creates a new parser using a new <see cref="XLWorkbook"/> from the given <paramref name="path"/>.
         /// </summary>
         /// <param name="path">The path.</param>
-        public ExcelParser(string path) : this(path, new CsvConfiguration()) { }
+        public ExcelParser(string path, int rowOffset = 0) : this(path, new CsvConfiguration(), rowOffset) { }
 
         /// <summary>
         /// Creates a new parser using a new <see cref="XLWorkbook"/> from the given <paramref name="path"/> and uses the given <paramref name="configuration"/>.
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="configuration">The configuration.</param>
-        public ExcelParser(string path, CsvConfiguration configuration)
-            : this(new XLWorkbook(path, XLEventTracking.Disabled), configuration)
+        public ExcelParser(string path, CsvConfiguration configuration, int rowOffset = 0)
+            : this(new XLWorkbook(path, XLEventTracking.Disabled), configuration, rowOffset)
         {
             disposeWorkbook = true;
         }
@@ -42,7 +42,7 @@ namespace CsvHelper.Excel
         /// </remarks>
         /// </summary>
         /// <param name="workbook">The <see cref="XLWorkbook"/> with the data.</param>
-        public ExcelParser(XLWorkbook workbook) : this(workbook, new CsvConfiguration()) { }
+        public ExcelParser(XLWorkbook workbook, int rowOffset = 0) : this(workbook, new CsvConfiguration(), rowOffset) { }
 
         /// <summary>
         /// Creates a new parser using the given <see cref="XLWorkbook"/> and <see cref="CsvConfiguration"/>.
@@ -52,24 +52,25 @@ namespace CsvHelper.Excel
         /// </summary>
         /// <param name="workbook">The <see cref="XLWorkbook"/> with the data.</param>
         /// <param name="configuration">The configuration.</param>
-        public ExcelParser(XLWorkbook workbook, CsvConfiguration configuration) : this(workbook.Worksheets.First(), configuration) { }
+        public ExcelParser(XLWorkbook workbook, CsvConfiguration configuration, int rowOffset = 0) : this(workbook.Worksheets.First(), configuration, rowOffset) { }
 
         /// <summary>
         /// Creates a new parser using the given <see cref="IXLWorksheet"/>.
         /// </summary>
         /// <param name="worksheet">The <see cref="IXLWorksheet"/> with the data.</param>
-        public ExcelParser(IXLWorksheet worksheet) : this(worksheet, new CsvConfiguration()) { }
+        public ExcelParser(IXLWorksheet worksheet, int rowOffset = 0) : this(worksheet, new CsvConfiguration(), rowOffset) { }
 
         /// <summary>
         /// Creates a new parser using the given <see cref="IXLWorksheet"/> and <see cref="CsvConfiguration"/>.
         /// </summary>
         /// <param name="worksheet">The <see cref="IXLWorksheet"/> with the data.</param>
         /// <param name="configuration">The configuration.</param>
-        public ExcelParser(IXLWorksheet worksheet, CsvConfiguration configuration)
+        public ExcelParser(IXLWorksheet worksheet, CsvConfiguration configuration, int rowOffset = 0)
         {
             workbook = worksheet.Workbook;
             this.worksheet = worksheet;
             this.configuration = configuration;
+            this.currentRow += rowOffset;
             FieldCount = worksheet.RowsUsed().CellsUsed().Max(cell => cell.Address.ColumnNumber);
         }
 
